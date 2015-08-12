@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var marked = require('marked');
 
 var models = require('../models/');
+var Promise = require('bluebird');
 
 var Page = models.Page;
 var User = models.User;
@@ -9,7 +11,7 @@ var User = models.User;
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   Page.find().exec().then(function(pages) {
-    //res.json(pages);
+    // res.json(pages);
     res.render('index', {pages: pages});
   });
 });
@@ -38,8 +40,12 @@ router.get('/add/', function(req, res, next) {
 router.get('/:url', function(req, res, next) {
   Page.findOne({urlTitle: req.params.url}).exec()
   .then(function(foundPage) {
-    //res.send(foundPage);
-    res.render('wikipage', {title: foundPage.title, content: foundPage.content, urlTitle: foundPage.urlTitle});
+    User.findOne({_id: foundPage.author})
+      .then(function(foundUser) {
+        console.log(foundUser);
+        console.log(foundPage);
+        res.render('wikipage', {title: foundPage.title, content: foundPage.content, urlTitle: foundPage.urlTitle, author: foundUser.name, userid: foundUser._id});
+      });
   });
 });
 

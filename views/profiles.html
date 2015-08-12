@@ -1,0 +1,21 @@
+
+
+{% extends "layout.html" %}
+
+{% block content %}
+Author: {{name}}
+<br>
+Email: {{email}}
+<br>
+Pages:
+<br>
+  {% if pages.length > 0 %}
+  <ul>
+    {% for page in pages %}
+      <li>{{ page | pageLink }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  This user has no pages
+  {% endif %}
+{% endblock %}

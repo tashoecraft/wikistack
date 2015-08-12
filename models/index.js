@@ -21,10 +21,26 @@ pageSchema.virtual('route').get(function() {
   return '/wiki/' + this.urlTitle;
 });
 
+pageSchema.pre('validate',function(next) {
+  if (typeof this.title !== 'undefined' && this.title !== '') {
+    this.urlTitle = this.title.replace(/\s+/g, '_').replace(/\W/g, '');
+  } else {
+    // Generates random 5 letter string
+    this.urlTitle = Math.random().toString(36).substring(2, 7);
+}
+next();
+});
 
 var userSchema = new mongoose.Schema({
-    name: {
-      first: {type: String, required: true},
-      last: {type: String, required: true}},
-    email: {type: String, required: true, unique: true},
+      name: {type: String, required: true},
+      email: {type: String, required: true, unique: true},
 });
+
+var Page = mongoose.model('Page', pageSchema);
+var User = mongoose.model('User', userSchema);
+
+
+module.exports = {
+  Page: Page,
+  User: User
+};

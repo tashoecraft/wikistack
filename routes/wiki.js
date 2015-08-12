@@ -8,22 +8,27 @@ var User = models.User;
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.redirect('/');
+  Page.find().exec().then(function(pages) {
+    //res.json(pages);
+    res.render('index', {pages: pages});
+  });
 });
 
 router.post('/', function(req, res, next) {
   var page = new Page({
     title: req.body.title,
-    content: req.body.content
+    content: req.body.content,
   });
 
-  page.save()
+User.findOrCreate(req.body).then(function(user) {
+    page.author = user._id;
+    return page.save();
+  })
   .then(function(savePage){
     res.redirect(savePage.route);
   })
-  .then(function(err) {
-    console.log(err);
-  });
+  .then(null, next
+  );
 });
 
 router.get('/add/', function(req, res, next) {

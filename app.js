@@ -10,6 +10,7 @@ var users = require('./routes/users');
 var wiki = require('./routes/wiki');
 
 var swig = require('swig');
+require('./filters')(swig);
 
 var app = express();
 
